@@ -196,9 +196,10 @@ Suite * test_suite(void)
     /* Core test case */
     tc_core = tcase_create("Core");
 
+    tcase_add_test(tc_core, test_strutils_returns_name);
+
     tcase_add_test(tc_core, test_trim_handles_NULL_pointer);
     tcase_add_test(tc_core, test_trim_handles_empty_string);
-    tcase_add_test(tc_core, test_strutils_returns_name);
     tcase_add_test(tc_core, test_trim_strips_leading_spaces);
     tcase_add_test(tc_core, test_trim_strips_trailing_spaces);
     tcase_add_test(tc_core, test_trim_strips_leading_and_trailing_spaces);
