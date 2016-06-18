@@ -6,6 +6,8 @@
 
 static char *_digit2symbol(char *buff, unsigned digit, char max, char mid, char min);
 
+static int _symbol2number(char symbol);
+
 
 
 char *roman_name(void)
@@ -48,6 +50,7 @@ int number2roman(unsigned number, char *roman)
 
     return success;
 }
+
 
 
 static char *_digit2symbol(char *buff, unsigned digit, char decade, char half, char unit)
@@ -101,5 +104,67 @@ int roman2number(char *roman, unsigned *number)
 {
     int success = 0;
 
+    if (roman != NULL && number != NULL)
+    {
+        int         prevSymbolValue = 1000;  /* max possible value = M */
+        int         symbolValue = 0;
+        unsigned    numberValue = 0;
+        char        *cp = roman;
+
+        while (*cp)
+        {
+            symbolValue = _symbol2number(*cp++);
+            numberValue += symbolValue;
+            if (symbolValue > prevSymbolValue)
+            {
+                numberValue -= 2 * prevSymbolValue;
+            }
+            prevSymbolValue = symbolValue;
+        }
+
+        if (numberValue <= ROMAN_MAX_NUMBER_YEAR)
+        {
+            *number = numberValue;
+            success = !0;
+        }
+    }
+
     return success;
+}
+
+
+
+static int _symbol2number(char symbol)
+{
+    int digit = 0;
+
+    switch (symbol)
+    {
+        case 'I':
+            digit = 1;
+            break;
+        case 'V':
+            digit = 5;
+            break;
+        case 'X':
+            digit = 10;
+            break;
+        case 'L':
+            digit = 50;
+            break;
+        case 'C':
+            digit = 100;
+            break;
+        case 'D':
+            digit = 500;
+            break;
+        case 'M':
+            digit = 1000;
+            break;
+        default:
+            digit = 0;
+            break;
+    }
+
+    return digit;
 }
