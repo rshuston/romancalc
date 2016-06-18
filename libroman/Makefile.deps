@@ -1,0 +1,2 @@
+roman.o: roman.c roman.h
+roman_test.o: roman_test.c roman.h
