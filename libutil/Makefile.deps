@@ -1,3 +1,2 @@
 strutils.o: strutils.c strutils.h
-strutils_test.o: strutils_test.c /opt/local/include/check.h \
-  /opt/local/include/check_stdint.h strutils.h
+strutils_test.o: strutils_test.c strutils.h

@@ -1,3 +1,2 @@
 roman.o: roman.c roman.h
-roman_test.o: roman_test.c /opt/local/include/check.h \
-  /opt/local/include/check_stdint.h roman.h
+roman_test.o: roman_test.c roman.h
