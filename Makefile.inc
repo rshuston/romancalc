@@ -10,6 +10,7 @@ AR = ar
 ARFLAGS = rcs
 
 ifeq ($(UNAME), Darwin)
+CFLAGS += -I /opt/local/include
 CHECK_TEST_LIBS = /opt/local/lib/libcheck.a
 endif
 ifeq ($(UNAME), Linux)
