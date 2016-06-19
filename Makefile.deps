@@ -1,3 +1,4 @@
 main.o: main.c app.h
 app.o: app.c app.h libroman/roman.h libutil/strutils.h
-app_test.o: app_test.c app.h
+app_test.o: app_test.c /opt/local/include/check.h \
+  /opt/local/include/check_stdint.h app.h libroman/roman.h
