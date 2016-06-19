@@ -34,10 +34,12 @@ int app_exec(int argc, char *argv[])
 
                 strncpy(roman_value1, argv[1], ROMAN_MAX_STRING_LENGTH);
                 roman_value1[ROMAN_MAX_STRING_LENGTH] = '\0';
+                trim(roman_value1);
                 uppercase(roman_value1);
 
                 strncpy(roman_value2, argv[3], ROMAN_MAX_STRING_LENGTH);
                 roman_value2[ROMAN_MAX_STRING_LENGTH] = '\0';
+                trim(roman_value2);
                 uppercase(roman_value2);
 
                 if (operation == '+')
