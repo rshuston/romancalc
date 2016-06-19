@@ -166,13 +166,45 @@ START_TEST (test_roman2number_fails_for_NULL_pointers)
 }
 END_TEST
 
-START_TEST (test_roman2number_fails_for_invalid_roman_year)
+START_TEST (test_roman2number_fails_for_invalid_roman_year_1)
 {
     char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
     unsigned    integer_year;
     int         success;
 
-    strncpy(roman_year, "MMMMCMXCIX", ROMAN_MAX_STRING_LENGTH);
+    strncpy(roman_year, "MMMMCMXCIX", ROMAN_MAX_STRING_LENGTH);  /* Too big */
+    roman_year[ROMAN_MAX_STRING_LENGTH] = '\0';
+    integer_year = 0;
+
+    success = roman2number(roman_year, &integer_year);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+START_TEST (test_roman2number_fails_for_invalid_roman_year_2)
+{
+    char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
+    unsigned    integer_year;
+    int         success;
+
+    strncpy(roman_year, "MCMXMCMIX", ROMAN_MAX_STRING_LENGTH);  /* Bad sequence */
+    roman_year[ROMAN_MAX_STRING_LENGTH] = '\0';
+    integer_year = 0;
+
+    success = roman2number(roman_year, &integer_year);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+START_TEST (test_roman2number_fails_for_invalid_roman_year_3)
+{
+    char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
+    unsigned    integer_year;
+    int         success;
+
+    strncpy(roman_year, "MCMXCL", ROMAN_MAX_STRING_LENGTH);  /* Bad sequence */
     roman_year[ROMAN_MAX_STRING_LENGTH] = '\0';
     integer_year = 0;
 
@@ -512,7 +544,9 @@ Suite * test_suite(void)
     tcase_add_test(tc_core, test_roman2number_fails_for_NULL_string_pointer);
     tcase_add_test(tc_core, test_roman2number_fails_for_NULL_integer_pointer);
     tcase_add_test(tc_core, test_roman2number_fails_for_NULL_pointers);
-    tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year);
+    tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year_1);
+    tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year_2);
+    tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year_3);
     tcase_add_test(tc_core, test_roman2number_converts_maximum_roman_year);
     tcase_add_test(tc_core, test_roman2number_converts_0);
     tcase_add_test(tc_core, test_roman2number_converts_1954);

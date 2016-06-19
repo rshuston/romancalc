@@ -1,12 +1,33 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "roman.h"
 
 
 
+/*
+ * Symbol set tables used for converting roman values to numbers
+ */
+
+static char *RomanSymbolSet1000[3] =
+  /*   9     8       7      6     5    4     3      2     1  */
+                                          { "MMM", "MM", "M" }; /* 1000's */
+
+static char *RomanSymbolSets[4][9] =
+{
+  /*   9     8       7      6     5    4     3      2     1  */
+    { "CM", "DCCC", "DCC", "DC", "D", "CD", "CCC", "CC", "C" }, /* 100's */
+    { "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X" }, /* 10's */
+    { "IX", "VIII", "VII", "VI", "V", "IV", "III", "II", "I" }  /* 1's */
+};
+
+
+
 static char *_digit2symbol(char *buff, unsigned digit, char max, char mid, char min);
 
-static int _symbol2number(char symbol);
+static int _canGetDecadeDigit(char *roman, char *decadeCharSet);
+static int _getDecadeDigit(char *roman, char *matchSet[], int matchSetSize, unsigned *digitValue);
+
 
 
 
@@ -53,6 +74,7 @@ int number2roman(unsigned number, char *roman)
 
 
 
+/* Private function to convert numerical digit to roman symbol */
 static char *_digit2symbol(char *buff, unsigned digit, char decade, char half, char unit)
 {
     char    *cp = buff;
@@ -106,23 +128,75 @@ int roman2number(char *roman, unsigned *number)
 
     if (roman != NULL && number != NULL)
     {
-        int         prevSymbolValue = 1000;  /* max possible value = M */
-        int         symbolValue = 0;
-        unsigned    numberValue = 0;
+        int         invalidSequence = 0;
         char        *cp = roman;
+        unsigned    numberValue = 0;
+        int         index;
 
-        while (*cp)
+        for (index = 0; index < 4; index++)
         {
-            symbolValue = _symbol2number(*cp++);
-            numberValue += symbolValue;
-            if (symbolValue > prevSymbolValue)
+            int     decade;
+            char    *validDecadeCharSet;
+            char    *invalidDecadeCharSet;
+            char    **matchSet;
+            int     matchSetSize;
+
+            switch (index)
             {
-                numberValue -= 2 * prevSymbolValue;
+                case 0:
+                    decade = 1000;
+                    validDecadeCharSet = "M";
+                    invalidDecadeCharSet = "";
+                    matchSet = RomanSymbolSet1000;
+                    matchSetSize = 3;
+                    break;
+                case 1:
+                    decade = 100;
+                    validDecadeCharSet = "CD";
+                    invalidDecadeCharSet = "M";
+                    matchSet = RomanSymbolSets[index - 1];
+                    matchSetSize = 9;
+                    break;
+                case 2:
+                    decade = 10;
+                    validDecadeCharSet = "XL";
+                    invalidDecadeCharSet = "MCD";
+                    matchSet = RomanSymbolSets[index - 1];
+                    matchSetSize = 9;
+                    break;
+                default:
+                    decade = 1;
+                    validDecadeCharSet = "IV";
+                    invalidDecadeCharSet = "MCDXL";
+                    matchSet = RomanSymbolSets[index - 1];
+                    matchSetSize = 9;
+                    break;
             }
-            prevSymbolValue = symbolValue;
+            if ( _canGetDecadeDigit(cp, validDecadeCharSet) )
+            {
+                unsigned digitValue;
+
+                int matchWidth = _getDecadeDigit(cp, matchSet, matchSetSize, &digitValue);
+                if (matchWidth)
+                {
+                    numberValue += digitValue * decade;
+                    cp += matchWidth;
+                }
+                else
+                {
+                    /* If we get here, it's because the rest of the digit sequence is invalid */
+                    invalidSequence = 1;
+                    break;
+                }
+            }
+            else if ( _canGetDecadeDigit(cp, invalidDecadeCharSet) )
+            {
+                invalidSequence = 1;
+                break;
+            }
         }
 
-        if (numberValue <= ROMAN_MAX_NUMBER)
+        if (!invalidSequence && numberValue <= ROMAN_MAX_NUMBER)
         {
             *number = numberValue;
             success = !0;
@@ -134,39 +208,46 @@ int roman2number(char *roman, unsigned *number)
 
 
 
-static int _symbol2number(char symbol)
+/* Private function to see if beginning of a roman value can be decoded for the given decade set */
+static int _canGetDecadeDigit(char *roman, char *decadeCharSet)
 {
-    int digit = 0;
+    int canDo = 0;
+    char *cp = decadeCharSet;
 
-    switch (symbol)
+    while (*cp)
     {
-        case 'I':
-            digit = 1;
+        if (*cp++ == *roman)
+        {
+            canDo = 1;
             break;
-        case 'V':
-            digit = 5;
-            break;
-        case 'X':
-            digit = 10;
-            break;
-        case 'L':
-            digit = 50;
-            break;
-        case 'C':
-            digit = 100;
-            break;
-        case 'D':
-            digit = 500;
-            break;
-        case 'M':
-            digit = 1000;
-            break;
-        default:
-            digit = 0;
-            break;
+        }
     }
 
-    return digit;
+    return canDo;
+}
+
+
+
+/* Private function to decode the decade digit of a roman value for a given match set */
+static int _getDecadeDigit(char *roman, char *matchSet[], int matchSetSize, unsigned *digitValue)
+{
+    int matchWidth = 0;
+    int index;
+
+    for (index = 0; index < matchSetSize; index++)
+    {
+        char *foundPtr;
+
+        foundPtr = strstr(roman, matchSet[index]);
+        if (foundPtr == roman)
+        {
+            matchWidth = strlen(matchSet[index]);
+            *digitValue = matchSetSize - index;
+            break;
+        }
+    }
+
+    return matchWidth;
 }
 
 
