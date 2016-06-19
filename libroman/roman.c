@@ -26,7 +26,7 @@ int number2roman(unsigned number, char *roman)
 {
     int success = 0;
 
-    if (number <= ROMAN_MAX_NUMBER_YEAR && roman != NULL)
+    if (number <= ROMAN_MAX_NUMBER && roman != NULL)
     {
         char        *cp = roman;
         unsigned    ones = number % 10;
@@ -122,7 +122,7 @@ int roman2number(char *roman, unsigned *number)
             prevSymbolValue = symbolValue;
         }
 
-        if (numberValue <= ROMAN_MAX_NUMBER_YEAR)
+        if (numberValue <= ROMAN_MAX_NUMBER)
         {
             *number = numberValue;
             success = !0;
@@ -168,3 +168,76 @@ static int _symbol2number(char symbol)
 
     return digit;
 }
+
+
+
+/*
+ * Adds two roman string year values
+ *
+ * augend + addend = sum
+ */
+
+int romanAdd(char *augend, char *addend, char *sum)
+{
+    int success = 0;
+
+    if (augend != NULL && addend != NULL && sum != NULL)
+    {
+        unsigned    augendValue;
+        unsigned    addendValue;
+
+        if ( roman2number(augend, &augendValue) && roman2number(addend, &addendValue) )
+        {
+            unsigned    sumValue;
+
+            sumValue = augendValue + addendValue;
+            if (sumValue <= ROMAN_MAX_NUMBER)
+            {
+                if ( number2roman(sumValue, sum) )
+                {
+                    success = !0;
+                }
+            }
+        }
+    }
+
+    return success;
+}
+
+
+/*
+ * Subtracts two roman string year values
+ *
+ * minuend + subtrahend = difference
+ */
+
+int romanSub(char *minuend, char *subrahend, char *difference)
+{
+    int success = 0;
+
+    if (minuend != NULL && subrahend != NULL && difference != NULL)
+    {
+        unsigned    minuendValue;
+        unsigned    subtrahendValue;
+
+        if ( roman2number(minuend, &minuendValue) && roman2number(subrahend, &subtrahendValue) )
+        {
+            if (minuendValue >= subtrahendValue)
+            {
+                unsigned    differenceValue;
+
+                differenceValue = minuendValue - subtrahendValue;
+                if (differenceValue <= ROMAN_MAX_NUMBER)  /* should never really be false */
+                {
+                    if ( number2roman(differenceValue, difference) )
+                    {
+                        success = !0;
+                    }
+                }
+            }
+        }
+    }
+
+    return success;
+}
+

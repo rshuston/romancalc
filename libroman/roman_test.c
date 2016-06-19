@@ -24,7 +24,7 @@ START_TEST (test_number2roman_fails_for_NULL_string_pointer)
     unsigned    integer_year;
     int         success;
 
-    integer_year = ROMAN_MAX_NUMBER_YEAR;
+    integer_year = ROMAN_MAX_NUMBER;
 
     success = number2roman(integer_year, NULL);
 
@@ -38,7 +38,7 @@ START_TEST (test_number2roman_fails_for_invalid_year)
     char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
     int         success;
 
-    integer_year = ROMAN_MAX_NUMBER_YEAR + 1;
+    integer_year = ROMAN_MAX_NUMBER + 1;
     roman_year[0] = '\0';
 
     success = number2roman(integer_year, roman_year);
@@ -54,12 +54,12 @@ START_TEST (test_number2roman_converts_maximum_year)
     char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
     int         success;
 
-    integer_year = ROMAN_MAX_NUMBER_YEAR;
+    integer_year = ROMAN_MAX_NUMBER;
     roman_year[0] = '\0';
 
     success = number2roman(integer_year, roman_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_str_eq(roman_year, "MMMCMXCIX");
 }
 END_TEST
@@ -75,7 +75,7 @@ START_TEST (test_number2roman_converts_0)
 
     success = number2roman(integer_year, roman_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_str_eq(roman_year, "");
 }
 END_TEST
@@ -91,7 +91,7 @@ START_TEST (test_number2roman_converts_1954)
 
     success = number2roman(integer_year, roman_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_str_eq(roman_year, "MCMLIV");
 }
 END_TEST
@@ -107,7 +107,7 @@ START_TEST (test_number2roman_converts_1990)
 
     success = number2roman(integer_year, roman_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_str_eq(roman_year, "MCMXC");
 }
 END_TEST
@@ -123,7 +123,7 @@ START_TEST (test_number2roman_converts_2014)
 
     success = number2roman(integer_year, roman_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_str_eq(roman_year, "MMXIV");
 }
 END_TEST
@@ -194,8 +194,8 @@ START_TEST (test_roman2number_converts_maximum_roman_year)
 
     success = roman2number(roman_year, &integer_year);
 
-    ck_assert(success != 0);
-    ck_assert_uint_eq(integer_year, ROMAN_MAX_NUMBER_YEAR);
+    ck_assert(success);
+    ck_assert_uint_eq(integer_year, ROMAN_MAX_NUMBER);
 }
 END_TEST
 
@@ -211,7 +211,7 @@ START_TEST (test_roman2number_converts_0)
 
     success = roman2number(roman_year, &integer_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_uint_eq(integer_year, 0);
 }
 END_TEST
@@ -228,7 +228,7 @@ START_TEST (test_roman2number_converts_1954)
 
     success = roman2number(roman_year, &integer_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_uint_eq(integer_year, 1954);
 }
 END_TEST
@@ -245,7 +245,7 @@ START_TEST (test_roman2number_converts_1990)
 
     success = roman2number(roman_year, &integer_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_uint_eq(integer_year, 1990);
 }
 END_TEST
@@ -262,8 +262,228 @@ START_TEST (test_roman2number_converts_2014)
 
     success = roman2number(roman_year, &integer_year);
 
-    ck_assert(success != 0);
+    ck_assert(success);
     ck_assert_uint_eq(integer_year, 2014);
+}
+END_TEST
+
+/* ===== romanAdd() ========================================================= */
+
+START_TEST (test_romanAdd_fails_for_NULL_pointers)
+{
+    int         success;
+
+    success = romanAdd(NULL, NULL, NULL);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+START_TEST (test_romanAdd_adds_valid_roman_years)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "MCMLIV", ROMAN_MAX_STRING_LENGTH);  /* 1954 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "CXLIV", ROMAN_MAX_STRING_LENGTH);  /* 144 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanAdd(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "MMXCVIII");  /* 2098 */
+}
+END_TEST
+
+START_TEST (test_romanAdd_adds_kata_example_1)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "XIV", ROMAN_MAX_STRING_LENGTH);  /* 14 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "LX", ROMAN_MAX_STRING_LENGTH);  /* 60 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanAdd(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "LXXIV");  /* 74 */
+}
+END_TEST
+
+START_TEST (test_romanAdd_adds_kata_example_2)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "XX", ROMAN_MAX_STRING_LENGTH);  /* 20 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "II", ROMAN_MAX_STRING_LENGTH);  /* 2 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanAdd(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "XXII");  /* 22 */
+}
+END_TEST
+
+START_TEST (test_romanAdd_fails_when_sum_will_be_invalid)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "MMMCMXCIX", ROMAN_MAX_STRING_LENGTH);  /* 3999 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "I", ROMAN_MAX_STRING_LENGTH);  /* 1 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanAdd(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+/* ===== romanSub() ========================================================= */
+
+START_TEST (test_romanSub_fails_for_NULL_pointers)
+{
+    int         success;
+
+    success = romanSub(NULL, NULL, NULL);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+START_TEST (test_romanSub_subtracts_to_empty_string_for_equal_values)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "MCMLIV", ROMAN_MAX_STRING_LENGTH);  /* 1954 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "MCMLIV", ROMAN_MAX_STRING_LENGTH);  /* 1954 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanSub(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "");
+}
+END_TEST
+
+START_TEST (test_romanSub_subtracts_when_roman_years_are_positively_ordered)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "MCMLIV", ROMAN_MAX_STRING_LENGTH);  /* 1954 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "CXLIV", ROMAN_MAX_STRING_LENGTH);  /* 144 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanSub(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "MDCCCX");  /* 1810 */
+}
+END_TEST
+
+START_TEST (test_romanSub_fails_when_roman_years_are_negatively_ordered)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "CXLIV", ROMAN_MAX_STRING_LENGTH);  /* 144 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "MCMLIV", ROMAN_MAX_STRING_LENGTH);  /* 1954 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanSub(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success == 0);
+}
+END_TEST
+
+START_TEST (test_romanSub_subtracts_kata_example_1)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "LXXIV", ROMAN_MAX_STRING_LENGTH);  /* 74 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "XIV", ROMAN_MAX_STRING_LENGTH);  /* 14 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanSub(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "LX");  /* 60 */
+}
+END_TEST
+
+START_TEST (test_romanSub_subtracts_kata_example_2)
+{
+    char        roman_year1[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year2[ROMAN_MAX_STRING_LENGTH + 1];
+    char        roman_year3[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    strncpy(roman_year1, "XXII", ROMAN_MAX_STRING_LENGTH);  /* 22 */
+    roman_year1[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    strncpy(roman_year2, "II", ROMAN_MAX_STRING_LENGTH);  /* 2 */
+    roman_year2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    roman_year3[0] = '\0';
+
+    success = romanSub(roman_year1, roman_year2, roman_year3);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year3, "XX");  /* 20 */
 }
 END_TEST
 
@@ -298,6 +518,19 @@ Suite * test_suite(void)
     tcase_add_test(tc_core, test_roman2number_converts_1954);
     tcase_add_test(tc_core, test_roman2number_converts_1990);
     tcase_add_test(tc_core, test_roman2number_converts_2014);
+
+    tcase_add_test(tc_core, test_romanAdd_fails_for_NULL_pointers);
+    tcase_add_test(tc_core, test_romanAdd_adds_valid_roman_years);
+    tcase_add_test(tc_core, test_romanAdd_adds_kata_example_1);
+    tcase_add_test(tc_core, test_romanAdd_adds_kata_example_2);
+    tcase_add_test(tc_core, test_romanAdd_fails_when_sum_will_be_invalid);
+
+    tcase_add_test(tc_core, test_romanSub_fails_for_NULL_pointers);
+    tcase_add_test(tc_core, test_romanSub_subtracts_to_empty_string_for_equal_values);
+    tcase_add_test(tc_core, test_romanSub_subtracts_when_roman_years_are_positively_ordered);
+    tcase_add_test(tc_core, test_romanSub_fails_when_roman_years_are_negatively_ordered);
+    tcase_add_test(tc_core, test_romanSub_subtracts_kata_example_1);
+    tcase_add_test(tc_core, test_romanSub_subtracts_kata_example_2);
 
     suite_add_tcase(s, tc_core);
 
