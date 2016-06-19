@@ -1,6 +1,6 @@
 include Makefile.inc
 
-EXE = foo.exe
+EXE = romancalc.exe
 
 APP_LIB = app.a
 

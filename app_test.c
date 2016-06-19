@@ -2,6 +2,9 @@
 #include <check.h>
 
 #include "app.h"
+#include "roman.h"
+
+/* ===== app_name() ========================================================= */
 
 START_TEST (test_app_returns_name)
 {
@@ -11,6 +14,91 @@ START_TEST (test_app_returns_name)
     ck_assert_str_eq(name, "app");
 }
 END_TEST
+
+/* ===== app_exec() ========================================================= */
+
+START_TEST (test_app_exec_succeeds_for_addition)
+{
+    char    *exename;
+    char    *operation;
+    char    roman_value1[ROMAN_MAX_STRING_LENGTH + 1];
+    char    roman_value2[ROMAN_MAX_STRING_LENGTH + 1];
+    char    *argv[4];
+    int     returnValue;
+
+    exename = "app.exe";
+    operation = "+";
+    strncpy(roman_value1, "xiv", ROMAN_MAX_STRING_LENGTH);
+    roman_value1[ROMAN_MAX_STRING_LENGTH] = '\0';
+    strncpy(roman_value2, "lx", ROMAN_MAX_STRING_LENGTH);
+    roman_value2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    argv[0] = exename;
+    argv[1] = roman_value1;
+    argv[2] = operation;
+    argv[3] = roman_value2;
+
+    returnValue = app_exec(4, argv);  /* 0 = success */
+
+    ck_assert_int_eq(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_succeeds_for_subtraction)
+{
+    char    *exename;
+    char    *operation;
+    char    roman_value1[ROMAN_MAX_STRING_LENGTH + 1];
+    char    roman_value2[ROMAN_MAX_STRING_LENGTH + 1];
+    char    *argv[4];
+    int     returnValue;
+
+    exename = "app.exe";
+    operation = "-";
+    strncpy(roman_value1, "lxxiv", ROMAN_MAX_STRING_LENGTH);
+    roman_value1[ROMAN_MAX_STRING_LENGTH] = '\0';
+    strncpy(roman_value2, "lx", ROMAN_MAX_STRING_LENGTH);
+    roman_value2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    argv[0] = exename;
+    argv[1] = roman_value1;
+    argv[2] = operation;
+    argv[3] = roman_value2;
+
+    returnValue = app_exec(4, argv);  /* 0 = success */
+
+    ck_assert_int_eq(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_does_not_succeed)
+{
+    char    *exename;
+    char    *operation;
+    char    roman_value1[ROMAN_MAX_STRING_LENGTH + 1];
+    char    roman_value2[ROMAN_MAX_STRING_LENGTH + 1];
+    char    *argv[4];
+    int     returnValue;
+
+    exename = "app.exe";
+    operation = "+";
+    strncpy(roman_value1, "xiv", ROMAN_MAX_STRING_LENGTH);
+    roman_value1[ROMAN_MAX_STRING_LENGTH] = '\0';
+    strncpy(roman_value2, "lx", ROMAN_MAX_STRING_LENGTH);
+    roman_value2[ROMAN_MAX_STRING_LENGTH] = '\0';
+
+    argv[0] = exename;
+    argv[1] = roman_value1;
+    argv[2] = operation;
+    argv[3] = roman_value2;
+
+    returnValue = app_exec(3, argv);  /* 0 = success */
+
+    ck_assert_int_ne(returnValue, 0);
+}
+END_TEST
+
+/* ===== Test Suite ========================================================= */
 
 Suite * test_suite(void)
 {
@@ -23,10 +111,17 @@ Suite * test_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_app_returns_name);
+
+    tcase_add_test(tc_core, test_app_exec_succeeds_for_addition);
+    tcase_add_test(tc_core, test_app_exec_succeeds_for_subtraction);
+    tcase_add_test(tc_core, test_app_exec_does_not_succeed);
+
     suite_add_tcase(s, tc_core);
 
     return s;
 }
+
+/* ===== Test Driver ======================================================== */
 
 int main(void)
 {
