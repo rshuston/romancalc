@@ -191,9 +191,16 @@ int roman2number(char *roman, unsigned *number)
             }
             else if ( _canGetDecadeDigit(cp, invalidDecadeCharSet) )
             {
+                /* Should not be able to decode from other decades */
                 invalidSequence = 1;
                 break;
             }
+        }
+
+        if (*cp)
+        {
+            /* Not all of the string was parsed! */
+            invalidSequence = 1;
         }
 
         if (!invalidSequence && numberValue <= ROMAN_MAX_NUMBER)
