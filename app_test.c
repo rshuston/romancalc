@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
 
@@ -16,6 +17,120 @@ START_TEST (test_app_returns_name)
 END_TEST
 
 /* ===== app_exec() ========================================================= */
+
+START_TEST (test_app_exec_succeeds_for_conversion_of_good_decimal_number)
+{
+    char    *exename;
+    char    *decimal_value;
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    decimal_value = "1984";
+
+    argv[0] = exename;
+    argv[1] = decimal_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_eq(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_fails_conversion_of_bad_decimal_number_1)
+{
+    char    *exename;
+    char    *decimal_value;
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    decimal_value = "-1";
+
+    argv[0] = exename;
+    argv[1] = decimal_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_ne(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_fails_conversion_of_bad_decimal_number_2)
+{
+    char    *exename;
+    char    decimal_value[8];
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    sprintf(decimal_value, "%d", ROMAN_MAX_NUMBER + 1);
+
+    argv[0] = exename;
+    argv[1] = decimal_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_ne(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_succeeds_for_conversion_of_good_roman_number)
+{
+    char    *exename;
+    char    *roman_value;
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    roman_value = "MCMLXXXIV";
+
+    argv[0] = exename;
+    argv[1] = roman_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_eq(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_fails_conversion_of_bad_roman_number_1)
+{
+    char    *exename;
+    char    *roman_value;
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    roman_value = "MMMMCMXCIX";
+
+    argv[0] = exename;
+    argv[1] = roman_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_ne(returnValue, 0);
+}
+END_TEST
+
+START_TEST (test_app_exec_fails_conversion_of_bad_roman_number_2)
+{
+    char    *exename;
+    char    *roman_value;
+    char    *argv[2];
+    int     returnValue;
+
+    exename = "app.exe";
+    roman_value = "XVX";
+
+    argv[0] = exename;
+    argv[1] = roman_value;
+
+    returnValue = app_exec(2, argv);  /* 0 = success */
+
+    ck_assert_int_ne(returnValue, 0);
+}
+END_TEST
 
 START_TEST (test_app_exec_succeeds_for_addition)
 {
@@ -112,8 +227,17 @@ Suite * test_suite(void)
 
     tcase_add_test(tc_core, test_app_returns_name);
 
+    tcase_add_test(tc_core, test_app_exec_succeeds_for_conversion_of_good_decimal_number);
+    tcase_add_test(tc_core, test_app_exec_fails_conversion_of_bad_decimal_number_1);
+    tcase_add_test(tc_core, test_app_exec_fails_conversion_of_bad_decimal_number_2);
+
+    tcase_add_test(tc_core, test_app_exec_succeeds_for_conversion_of_good_roman_number);
+    tcase_add_test(tc_core, test_app_exec_fails_conversion_of_bad_roman_number_1);
+    tcase_add_test(tc_core, test_app_exec_fails_conversion_of_bad_roman_number_2);
+
     tcase_add_test(tc_core, test_app_exec_succeeds_for_addition);
     tcase_add_test(tc_core, test_app_exec_succeeds_for_subtraction);
+
     tcase_add_test(tc_core, test_app_exec_does_not_succeed);
 
     suite_add_tcase(s, tc_core);
@@ -129,11 +253,16 @@ int main(void)
     Suite *s;
     SRunner *sr;
 
+    puts("-------------------------------------------------------------------------------");
+
     s = test_suite();
     sr = srunner_create(s);
 
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
+    
+    puts("-------------------------------------------------------------------------------");
+
     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

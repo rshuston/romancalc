@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <check.h>
@@ -184,6 +185,88 @@ START_TEST (test_uppercase_converts_all_letters_to_uppercase)
 }
 END_TEST
 
+/* ===== strConsistsOfCharSet() ============================================= */
+
+START_TEST (test_strConsistsOfCharSet_returns_true_for_consisting_of_char_set_1)
+{
+    int result;
+
+    result = strConsistsOfCharSet("1984", "0123456789");
+
+    ck_assert_int_ne(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_true_for_consisting_of_char_set_2)
+{
+    int result;
+
+    result = strConsistsOfCharSet("MCMLIIIIV", "MDCLXVI");
+
+    ck_assert_int_ne(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_NULL_string)
+{
+    int result;
+
+    result = strConsistsOfCharSet(NULL, "0123456789");
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_empty_string)
+{
+    int result;
+
+    result = strConsistsOfCharSet("", "0123456789");
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_NULL_char_set)
+{
+    int result;
+
+    result = strConsistsOfCharSet("MCMLIIIIV", NULL);
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_empty_char_set)
+{
+    int result;
+
+    result = strConsistsOfCharSet("MCMLIIIIV", "");
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_not_consisting_of_char_set_1)
+{
+    int result;
+
+    result = strConsistsOfCharSet("1984", "MDCLXVI");
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
+START_TEST (test_strConsistsOfCharSet_returns_false_for_not_consisting_of_char_set_2)
+{
+    int result;
+
+    result = strConsistsOfCharSet("MCMLIIIIV", "0123456789");
+
+    ck_assert_int_eq(result, 0);
+}
+END_TEST
+
 /* ===== Test Suite ========================================================= */
 
 Suite * test_suite(void)
@@ -213,6 +296,15 @@ Suite * test_suite(void)
     tcase_add_test(tc_core, test_uppercase_handles_empty_string);
     tcase_add_test(tc_core, test_uppercase_converts_all_letters_to_uppercase);
 
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_true_for_consisting_of_char_set_1);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_true_for_consisting_of_char_set_2);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_NULL_string);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_empty_string);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_NULL_char_set);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_empty_char_set);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_not_consisting_of_char_set_1);
+    tcase_add_test(tc_core, test_strConsistsOfCharSet_returns_false_for_not_consisting_of_char_set_2);
+
     suite_add_tcase(s, tc_core);
 
     return s;
@@ -226,11 +318,16 @@ int main(void)
     Suite *s;
     SRunner *sr;
 
+    puts("-------------------------------------------------------------------------------");
+
     s = test_suite();
     sr = srunner_create(s);
 
     srunner_run_all(sr, CK_NORMAL);
     number_failed = srunner_ntests_failed(sr);
     srunner_free(sr);
+
+    puts("-------------------------------------------------------------------------------");
+
     return (number_failed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
 }

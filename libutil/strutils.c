@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "strutils.h"
 
@@ -101,4 +102,53 @@ char *uppercase(char *s)
         }
     }
     return s;
+}
+
+
+
+/*
+ * Test if a string consists of a character set
+ */
+
+int strConsistsOfCharSet(char *s, char *charSet)
+{
+    int success = 0;
+
+    if (s != NULL && charSet != NULL)
+    {
+        if ( strlen(s) && strlen(charSet) )
+        {
+            char *strChr;
+
+            success = 1;
+
+            strChr = s;
+            while (*strChr)
+            {
+                char *setChr;
+                int found;
+
+                found = 0;
+                setChr = charSet;
+                while (*setChr)
+                {
+                    if (*setChr++ == *strChr)
+                    {
+                        found = 1;
+                        break;
+                    }
+                }
+
+                if (found == 0)
+                {
+                    success = 0;
+                    break;
+                }
+
+                strChr++;
+            }
+        }
+    }
+
+    return success;
 }
