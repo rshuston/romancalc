@@ -9,13 +9,13 @@
  * Symbol set tables used for converting roman values to numbers
  */
 
-static char *RomanSymbolSet1000[3] =
-  /*   9     8       7      6     5    4     3      2     1  */
-                                          { "MMM", "MM", "M" }; /* 1000's */
+#define NUM_ROMAN_DECADES           4
+#define NUM_ROMAN_DECADE_SYMBOLS    9
 
-static char *RomanSymbolSets[4][9] =
+static char *_RomanSymbolSets[NUM_ROMAN_DECADES][NUM_ROMAN_DECADE_SYMBOLS] =
 {
   /*   9     8       7      6     5    4     3      2     1  */
+    { "",    "",    "",    "",   "",  "",   "MMM", "MM", "M" }, /* 1000's */
     { "CM", "DCCC", "DCC", "DC", "D", "CD", "CCC", "CC", "C" }, /* 100's */
     { "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X" }, /* 10's */
     { "IX", "VIII", "VII", "VI", "V", "IV", "III", "II", "I" }  /* 1's */
@@ -27,7 +27,6 @@ static char *_digit2symbol(char *buff, unsigned digit, char max, char mid, char 
 
 static int _canGetDecadeDigit(char *roman, char *decadeCharSet);
 static int _getDecadeDigit(char *roman, char *matchSet[], int matchSetSize, unsigned *digitValue);
-
 
 
 
@@ -133,13 +132,12 @@ int roman2number(char *roman, unsigned *number)
         unsigned    numberValue = 0;
         int         index;
 
-        for (index = 0; index < 4; index++)
+        for (index = 0; index < NUM_ROMAN_DECADES; index++)
         {
             int     decade;
             char    *validDecadeCharSet;
             char    *invalidDecadeCharSet;
             char    **matchSet;
-            int     matchSetSize;
 
             switch (index)
             {
@@ -147,36 +145,29 @@ int roman2number(char *roman, unsigned *number)
                     decade = 1000;
                     validDecadeCharSet = "M";
                     invalidDecadeCharSet = "";
-                    matchSet = RomanSymbolSet1000;
-                    matchSetSize = 3;
                     break;
                 case 1:
                     decade = 100;
                     validDecadeCharSet = "CD";
                     invalidDecadeCharSet = "M";
-                    matchSet = RomanSymbolSets[index - 1];
-                    matchSetSize = 9;
                     break;
                 case 2:
                     decade = 10;
                     validDecadeCharSet = "XL";
                     invalidDecadeCharSet = "MCD";
-                    matchSet = RomanSymbolSets[index - 1];
-                    matchSetSize = 9;
                     break;
                 default:
                     decade = 1;
                     validDecadeCharSet = "IV";
                     invalidDecadeCharSet = "MCDXL";
-                    matchSet = RomanSymbolSets[index - 1];
-                    matchSetSize = 9;
                     break;
             }
+            matchSet = _RomanSymbolSets[index];
             if ( _canGetDecadeDigit(cp, validDecadeCharSet) )
             {
                 unsigned digitValue;
 
-                int matchWidth = _getDecadeDigit(cp, matchSet, matchSetSize, &digitValue);
+                int matchWidth = _getDecadeDigit(cp, matchSet, NUM_ROMAN_DECADE_SYMBOLS, &digitValue);
                 if (matchWidth)
                 {
                     numberValue += digitValue * decade;
@@ -243,14 +234,17 @@ static int _getDecadeDigit(char *roman, char *matchSet[], int matchSetSize, unsi
 
     for (index = 0; index < matchSetSize; index++)
     {
-        char *foundPtr;
-
-        foundPtr = strstr(roman, matchSet[index]);
-        if (foundPtr == roman)
+        if ( *matchSet[index] != '\0' )
         {
-            matchWidth = strlen(matchSet[index]);
-            *digitValue = matchSetSize - index;
-            break;
+            char *foundPtr;
+
+            foundPtr = strstr(roman, matchSet[index]);
+            if (foundPtr == roman)
+            {
+                matchWidth = strlen(matchSet[index]);
+                *digitValue = matchSetSize - index;
+                break;
+            }
         }
     }
 
