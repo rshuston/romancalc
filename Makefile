@@ -33,7 +33,7 @@ $(COMPONENT_LIBS): force
 	$(MAKE) -C $(dir $@) $(notdir $@)
 
 app_test.exe: app_test.o $(APP_LIB) $(COMPONENT_LIBS)
-	$(LD) $(LDFLAGS) $^ $(CHECK_TEST_LIBS) -o $@
+	$(LD) $(LDFLAGS) $^ $(TEST_LDFLAGS) -o $@
 
 all: $(EXE) alltests
 

@@ -20,7 +20,7 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
 roman_test.exe: roman_test.o roman.o
-	$(LD) $(LDFLAGS) $^ $(CHECK_TEST_LIBS) -o $@
+	$(LD) $(LDFLAGS) $^ $(TEST_LDFLAGS) -o $@
 
 tests: force
 	$(MAKE) $(TEST_EXES)

@@ -20,7 +20,7 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
 strutils_test.exe: strutils_test.o strutils.o
-	$(LD) $(LDFLAGS) $^ $(CHECK_TEST_LIBS) -o $@
+	$(LD) $(LDFLAGS) $^ $(TEST_LDFLAGS) -o $@
 
 tests: force
 	$(MAKE) $(TEST_EXES)
