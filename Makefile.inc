@@ -10,8 +10,8 @@ ARFLAGS = rcs
 
 PKG_CONFIG = $(shell which pkg-config)
 ifneq ($(PKG_CONFIG), "")
-CFLAGS += `$(PKG_CONFIG) --cflags check`
-TEST_LDFLAGS += `$(PKG_CONFIG) --libs check`
+CFLAGS += $(shell $(PKG_CONFIG) --cflags check)
+TEST_LDFLAGS += $(shell $(PKG_CONFIG) --libs check)
 endif
 
 %.o : %.c
