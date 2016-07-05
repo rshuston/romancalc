@@ -6,8 +6,9 @@ All you need is a reasonably decent C compiler (GCC, CLang, etc.) and GNU make.
 The project uses the `check` framework (https://github.com/libcheck/check) for unit-testing. It's available for nearly any *NIX platform.
 You will also want to install the correct `pkg-config` for your system, since the project makefile uses it to obtain the correct parameters for compiling and linking.
 
-To build the executable, run `make`. To build all the tests, run `make alltests`. To run all the tests, run `make runalltests`
-or `make --silent runalltests`.
+To build the executable, run `make`.  
+To build all the tests, run `make alltests`.  
+To run all the tests, run `make runalltests` or `make --silent runalltests`.
 
 Some examples:
 

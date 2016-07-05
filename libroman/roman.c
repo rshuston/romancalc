@@ -15,7 +15,7 @@
 static char *_RomanSymbolSets[NUM_ROMAN_DECADES][NUM_ROMAN_DECADE_SYMBOLS] =
 {
   /*   9     8       7      6     5    4     3      2     1  */
-    { "",    "",    "",    "",   "",  "",   "MMM", "MM", "M" }, /* 1000's */
+    { "",   "",     "",    "",   "",  "",   "MMM", "MM", "M" }, /* 1000's */
     { "CM", "DCCC", "DCC", "DC", "D", "CD", "CCC", "CC", "C" }, /* 100's */
     { "XC", "LXXX", "LXX", "LX", "L", "XL", "XXX", "XX", "X" }, /* 10's */
     { "IX", "VIII", "VII", "VI", "V", "IV", "III", "II", "I" }  /* 1's */
@@ -34,6 +34,7 @@ char *roman_name(void)
 {
     return "roman";
 }
+
 
 
 /*
@@ -290,7 +291,7 @@ int romanAdd(char *augend, char *addend, char *sum)
 /*
  * Subtracts two roman string year values
  *
- * minuend + subtrahend = difference
+ * minuend - subtrahend = difference
  */
 
 int romanSub(char *minuend, char *subrahend, char *difference)
