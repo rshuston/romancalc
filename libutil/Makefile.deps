@@ -1,0 +1,2 @@
+strutils.o: strutils.c strutils.h
+strutils_test.o: strutils_test.c strutils.h
