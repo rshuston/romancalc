@@ -37,4 +37,4 @@ clean:
 clobber:
 	rm -f $(OBJS) $(TEST_OBJS) $(TEST_EXES) $(LIB)
 
-include Makefile.deps
+-include Makefile.deps

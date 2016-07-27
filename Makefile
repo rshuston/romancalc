@@ -61,4 +61,4 @@ clobber:
 	rm -f main.o $(APP_OBJS) $(APP_TEST_OBJS) $(APP_LIB) $(EXE) $(APP_TEST_EXES)
 	for d in $(COMPONENT_DIRS); do (cd $$d; $(MAKE) clobber ); done
 
-include Makefile.deps
+-include Makefile.deps
