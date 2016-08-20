@@ -15,5 +15,9 @@ TEST_LDFLAGS += $(shell $(PKG_CONFIG) --libs check)
 endif
 
 %.o : %.c
-	$(CC) -c $(CFLAGS) $< -o $@
+	$(CC) -c $(CFLAGS) $< -o $@ -MMD
 
+%_test.exe : %_test.o %.o
+	$(LD) $(LDFLAGS) $^ $(TEST_LDFLAGS) -o $@
+
+.PRECIOUS: %.o
