@@ -1,11 +1,8 @@
 #ifndef roman_h
 #define roman_h
 
-
-#define ROMAN_MAX_NUMBER        3999
-
-#define ROMAN_MAX_STRING_LENGTH 9       /* 3999 = MMMCMXCIX */
-
+#define ROMAN_MAX_NUMBER        3999    /* 3999 = MMMCMXCIX */
+#define ROMAN_MAX_STRING_LENGTH 15      /* 3888 = MMMDCCCLXXXVIII */
 
 extern char *roman_name(void);
 

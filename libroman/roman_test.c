@@ -49,7 +49,7 @@ START_TEST (test_number2roman_fails_for_invalid_year)
 }
 END_TEST
 
-START_TEST (test_number2roman_converts_maximum_year)
+START_TEST (test_number2roman_converts_maximum_roman_year)
 {
     unsigned    integer_year;
     char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
@@ -62,6 +62,22 @@ START_TEST (test_number2roman_converts_maximum_year)
 
     ck_assert(success);
     ck_assert_str_eq(roman_year, "MMMCMXCIX");
+}
+END_TEST
+
+START_TEST (test_number2roman_converts_longest_roman_year)
+{
+    unsigned    integer_year;
+    char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
+    int         success;
+
+    integer_year = 3888;
+    roman_year[0] = '\0';
+
+    success = number2roman(integer_year, roman_year);
+
+    ck_assert(success);
+    ck_assert_str_eq(roman_year, "MMMDCCCLXXXVIII");
 }
 END_TEST
 
@@ -245,6 +261,23 @@ START_TEST (test_roman2number_converts_maximum_roman_year)
 
     ck_assert(success);
     ck_assert_uint_eq(integer_year, ROMAN_MAX_NUMBER);
+}
+END_TEST
+
+START_TEST (test_roman2number_converts_longest_roman_year)
+{
+    char        roman_year[ROMAN_MAX_STRING_LENGTH + 1];
+    unsigned    integer_year;
+    int         success;
+
+    strncpy(roman_year, "MMMDCCCLXXXVIII", ROMAN_MAX_STRING_LENGTH);
+    roman_year[ROMAN_MAX_STRING_LENGTH] = '\0';
+    integer_year = 0;
+
+    success = roman2number(roman_year, &integer_year);
+
+    ck_assert(success);
+    ck_assert_uint_eq(integer_year, 3888);
 }
 END_TEST
 
@@ -552,7 +585,8 @@ Suite * test_suite(void)
 
     tcase_add_test(tc_core, test_number2roman_fails_for_NULL_string_pointer);
     tcase_add_test(tc_core, test_number2roman_fails_for_invalid_year);
-    tcase_add_test(tc_core, test_number2roman_converts_maximum_year);
+    tcase_add_test(tc_core, test_number2roman_converts_maximum_roman_year);
+    tcase_add_test(tc_core, test_number2roman_converts_longest_roman_year);
     tcase_add_test(tc_core, test_number2roman_converts_0);
     tcase_add_test(tc_core, test_number2roman_converts_1954);
     tcase_add_test(tc_core, test_number2roman_converts_1990);
@@ -566,6 +600,7 @@ Suite * test_suite(void)
     tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year_3);
     tcase_add_test(tc_core, test_roman2number_fails_for_invalid_roman_year_4);
     tcase_add_test(tc_core, test_roman2number_converts_maximum_roman_year);
+    tcase_add_test(tc_core, test_roman2number_converts_longest_roman_year);
     tcase_add_test(tc_core, test_roman2number_converts_0);
     tcase_add_test(tc_core, test_roman2number_converts_1954);
     tcase_add_test(tc_core, test_roman2number_converts_1990);
