@@ -38,7 +38,7 @@ char *roman_name(void)
 
 
 /*
- * Converts an unsigned integer year to a roman string year
+ * Converts an unsigned integer value to a roman string value
  *
  * Returns "C" logical true if successful, "C" logical false otherwise
  */
@@ -117,7 +117,7 @@ static char *_digit2symbol(char *buff, unsigned digit, char decade, char half, c
 
 
 /*
- * Converts a roman string year to an unsigned integer year
+ * Converts a roman string value to an unsigned integer value
  *
  * Returns "C" logical true if successful, "C" logical false otherwise
  */
@@ -255,7 +255,7 @@ static int _getDecadeDigit(char *roman, char *matchSet[], int matchSetSize, unsi
 
 
 /*
- * Adds two roman string year values
+ * Adds two roman string value values
  *
  * augend + addend = sum
  */
@@ -289,7 +289,7 @@ int romanAdd(char *augend, char *addend, char *sum)
 
 
 /*
- * Subtracts two roman string year values
+ * Subtracts two roman string value values
  *
  * minuend - subtrahend = difference
  */
@@ -323,4 +323,3 @@ int romanSub(char *minuend, char *subrahend, char *difference)
 
     return success;
 }
-
